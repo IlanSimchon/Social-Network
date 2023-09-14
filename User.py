@@ -1,139 +1,187 @@
-from datetime import datetime
-from abc import ABC, abstractmethod
-
 import SocialNetwork
-from Post import TextPost, ImagePost, Post
+from Post import *
+
+# Define a mapping from string post categories to the PostCategory enum
+PostMap = {
+    "Text": PostCategory.TEXT,
+    "Image": PostCategory.IMAGE,
+    "Sale": PostCategory.SALE
+}
 
 
-class User:
+class Member(ABC):
+    @abstractmethod
+    def notify(self):
+        """
+        Abstract method for notifications (Observer design pattern).
+        This method should be implemented in subclasses.
+        """
+        pass
 
-    def __init__(self, userName: str, password: str):
-        self.userName = userName
-        self.password = password
-        self.followers = set()
-        # self.follows_them = set()
-        self.posts = []
-        self.notification = []
+
+class User(Member):
+    def __init__(self, network: SocialNetwork, user_name: str, password: str):
+        """
+        Initialize a User object with network connection, username, and password.
+
+        Parameters:
+        - network (SocialNetwork): The social network instance.
+        - user_name (str): The username of the user.
+        - password (str): The user's password (consider security implications).
+        """
+        self.__network = network
+        self.__user_name = user_name
+        self.__password = password
+        self.__followers = set()
+        self.__posts = []
+        self.__notifications = []
+
+    def get_user_name(self) -> str:
+        """
+        Get the user's username.
+
+        Returns:
+        str: The username of the user.
+        """
+        return self.__user_name
+
+    def get_password(self) -> str:
+        """
+        Get the user's password (consider security implications).
+
+        Returns:
+        str: The user's password.
+        """
+        return self.__password
+
+    def get_followers(self) -> set:
+        """
+        Get the set of users following this user.
+
+        Returns:
+        set: A set of User objects representing followers.
+        """
+        return self.__followers
 
     def follow(self, user: 'User'):
-        # self.follows_them.add(user)
-        user.followers.add(self)
+        """
+        Allow this user to follow another user.
 
-    def unFollow(self, user):
-        # self.follows_them.remove(user)
-        user.followers.remove(self)
-
-    def Publish_post(self, type: str, data: str) -> Post or None:
-        if type == "Text":
-            post = TextPost(self, data)
-        elif type == "Image":
-            post = ImagePost(self, data)
+        Parameters:
+        - user (User): The user to follow.
+        """
+        if self.is_connected():
+            user.__followers.add(self)
+            print(f'{self.__user_name} started following {user.__user_name}')
         else:
-            raise Exception
-        self.posts.append(post)
-        print(post)
-        self.update()
-        return post
+            raise Exception('Error: you must log in to follow')
 
-    def update(self):
-        for follower in self.followers:
-            follower.notify(self)
+    def unfollow(self, user):
+        """
+        Allow this user to unfollow another user.
 
-    def notify(self, user:'User'):
-        self.notification.append(f'{user.userName} has a new post')
-
-    def notify_author(self, type: str, user:'User'):
-        if type == "like":
-            notification = f'{user.userName} liked your post'
-            print('notification to ',self.userName, ': ', notification)
-            self.notification.append(notification)
-        elif type == 'comment':
-            notification = f'{user.userName} commented on your post: '
-            print('notification to ',self.userName, ': ', notification, end='')
-            self.notification.append(notification)
+        Parameters:
+        - user (User): The user to unfollow.
+        """
+        if self.is_connected():
+            if self in user.__followers:
+                user.__followers.remove(self)
+                print(f'{self.__user_name} unfollowed {user.__user_name}')
+            else:
+                raise Exception("Error: you need to follow in order to unfollow")
         else:
-            raise Exception
+            raise Exception('Error: you must log in to unfollow')
 
-    def __str__(self):
-            return f'user name: {self.userName}, number of posts: {len(self.posts)} ' \
-                                                      f', number of followers: {len(self.followers)}'
+    def publish_post(self, category: str, *data) -> Post or None:
+        """
+        Publish a post of the specified category (Text, Image, Sale).
 
-# class Person:
-#     def __init__(self, *args):
-#         if len(args) == 3:
-#             self.__id = args[0]
-#             self.__name = args[1]
-#             self.__year = args[2]
-#         elif len(args) == 1 and isinstance(args[0], Person):
-#             self.__id = args[0].__id
-#             self.__name = args[0].__name
-#             self.__year = args[0].__year
-#         else:
-#             raise Exception
-#
-#     def get_id(self) -> int:
-#         return self.__id
-#
-#     def get_name(self) -> str:
-#         return self.__name
-#
-#     def get_age(self) -> int:
-#         return int(datetime.now().year) - self.__year
-#
-#     def __set_name__(self, new_name: str):
-#         self.__name = new_name
-#
-#     def __eq__(self, other: 'Person'):
-#         return self.__id == other.__id
-#
-#     def __str__(self):
-#         return f'ID: {self.__id}, Name: {self.__name}, Age: {self.get_age()}'
-#
-#
-# class observer(ABC):
-#     @abstractmethod
-#     def update(self, ):
-#         pass
-#
-#
-# class User(Person, observer):
-#
-#     def __init__(self, person: 'Person', mail: str, password: str):
-#         super().__init__(person)
-#         self.userName = mail
-#         self.password = password
-#         self.posts = []
-#         self.followers = set()
-#         self.follows_them = ()
-#         self.notification = []
-#
-#     def follow(self, user:'User'):
-#         self.follows_them.add(user)
-#         user.followers.add(1)
-#
-#     def unFollow(self, user):
-#         self.follows_them.remove(user)
-#         user.followers.remove(self)
-#
-#     def Publish_post(self, data: str):
-#         post = Post(data)
-#         self.posts.append(post)
-#         self.update()
-#
-#     def update(self):
-#         for follower in self.followers:
-#             follower.notify("post", self)
-#
-#     def notify(self, type: str, user: 'User'):
-#         if type == "post":
-#             self.notification.append(f'{user.userName} has a new post')
-#         elif type == "like":
-#             self.notification.append(f'{user.userName} liked your post')
-#         elif type == 'comment':
-#             self.notification.append(f'{user.userName} commented on your post')
-#         else:
-#             raise Exception
-#
-#     def __str__(self):
-#         return super(User, self).__str__(), ' ' + f'Mail: {self.userName}, number of posts: {len(self.posts)} ' \
-#                                                   f', number of followers: {len(self.followers)}'
+        Parameters:
+        - category (str): The category of the post (e.g., "Text", "Image", "Sale").
+        - *data: Variable-length arguments depending on the post category.
+
+        Returns:
+        Post or None: The created Post object or None if the user not connected.
+        """
+        if self.is_connected():
+            # Use the PostMap to convert the string category to an enum member
+            post = PostFactory.create_post(self, PostMap.get(category), *data)
+            self.__posts.append(post)
+            return post
+        raise Exception('Error: you must log in to post')
+
+    def notify(self, category: ActionCategory, user: 'User'):
+        """
+        Notify this user about different activities (e.g., posts, likes, comments) related to other users.
+
+        Parameters:
+        - category (str): The category of the notification (e.g., "post", "like", "comment").
+        - user (User): The user related to the notification.
+        - flag (int): An optional flag for additional information.
+
+        Raises:
+        Exception: If the category parameter is invalid.
+        """
+        if category == ActionCategory.POST:
+            self.__notifications.append(f'{user.__user_name} has a new post')
+            return
+        elif category == ActionCategory.LIKE:
+            notification = f'{user.__user_name} liked your post'
+            print(f'notification to {self.__user_name}: {notification}')
+        elif category == ActionCategory.COMMENT:
+            notification = f'{user.__user_name} commented on your post'
+            print(f'notification to {self.__user_name}: {notification}: ', end='')
+        else:
+            raise Exception("Error in category parameter")
+        self.__notifications.append(notification)
+
+    def notify_participant(self, category: ActionCategory, user: 'User', author: 'User'):
+        """
+        Notify this user about activities related to other users' posts (likes, comments).
+
+        Parameters:
+        - category (str): The category of the notification (e.g., "like", "comment").
+        - user (User): The user related to the notification.
+        - author (User): The author of the post related to the notification.
+
+        Raises:
+        Exception: If the category parameter is invalid.
+        """
+        if category == ActionCategory.LIKE:
+            notification = f'{user.__user_name} liked the post of {author.__user_name}'
+        elif category == ActionCategory.COMMENT:
+            notification = f'{user.__user_name} commented on the post of {author.__user_name}'
+        else:
+            raise Exception("error in category parameter")
+        self.__notifications.append(notification)
+
+    def is_connected(self) -> bool:
+        """
+        Check if this user is connected to the network.
+
+        Returns:
+        bool: True if connected, False otherwise.
+
+        Raises:
+        Exception: If the user is not found in the network.
+        """
+        if self in self.__network.get_users().keys():
+            return self.__network.get_users()[self]
+        raise Exception("Error: User not found!")
+
+    def print_notifications(self):
+        """
+        Print all notifications for this user.
+        """
+        print(f"{self.__user_name}'s notifications:")
+        for notification in self.__notifications:
+            print(notification)
+
+    def __str__(self) -> str:
+        """
+        Get a string representation of this User object.
+
+        Returns:
+        str: A string representation of the User object.
+        """
+        return f'User name: {self.__user_name}, Number of posts: {len(self.__posts)}, Number of followers: {len(self.__followers)} '
