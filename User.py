@@ -135,26 +135,6 @@ class User(Member):
             raise Exception("Error in category parameter")
         self.__notifications.append(notification)
 
-    def notify_participant(self, category: ActionCategory, user: 'User', author: 'User'):
-        """
-        Notify this user about activities related to other users' posts (likes, comments).
-
-        Parameters:
-        - category (str): The category of the notification (e.g., "like", "comment").
-        - user (User): The user related to the notification.
-        - author (User): The author of the post related to the notification.
-
-        Raises:
-        Exception: If the category parameter is invalid.
-        """
-        if category == ActionCategory.LIKE:
-            notification = f'{user.__user_name} liked the post of {author.__user_name}'
-        elif category == ActionCategory.COMMENT:
-            notification = f'{user.__user_name} commented on the post of {author.__user_name}'
-        else:
-            raise Exception("error in category parameter")
-        self.__notifications.append(notification)
-
     def is_connected(self) -> bool:
         """
         Check if this user is connected to the network.
@@ -184,4 +164,4 @@ class User(Member):
         Returns:
         str: A string representation of the User object.
         """
-        return f'User name: {self.__user_name}, Number of posts: {len(self.__posts)}, Number of followers: {len(self.__followers)} '
+        return f'User name: {self.__user_name}, Number of posts: {len(self.__posts)}, Number of followers: {len(self.__followers)}'

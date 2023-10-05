@@ -58,7 +58,7 @@ class SocialNetwork:
         for user in self.__users_connection.keys():
             if user.get_user_name() == user_name and user.get_password() == password:
                 self.__users_connection[user] = True
-                print(f'{user.get_user_name()} connected!')
+                print(f'{user.get_user_name()} connected')
                 return user
         raise Exception("User not found!")
 
@@ -90,7 +90,7 @@ class SocialNetwork:
         Returns:
         str: A string containing details of the social network and its users.
         """
-        data = f'{self.__name} social network:\n'
+        data = f'{self.__name} social network:'
         for user in self.__users_connection:
-            data += f'{user} \n'
+            data += f'\n{user}'
         return data

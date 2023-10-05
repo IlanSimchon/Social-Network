@@ -6,7 +6,7 @@ def main():
     network = SocialNetwork("Twitter")
     print()
 
-    # Create users
+    # Creating users
     u1 = network.sign_up("Alice", "pass1")
     u2 = network.sign_up("Bob", "pass2")
     u3 = network.sign_up("Charlie", "pass3")
@@ -63,7 +63,6 @@ def main():
     p3.sold("pass3")
     print()
 
-    # Don't forget to change in print that the product is sold
     print(p3)
 
     # Displaying the image of the post

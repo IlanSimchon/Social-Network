@@ -92,7 +92,8 @@ class Post(ABC, Sender):
         """
         if user.is_connected():
             self.update(ActionCategory.COMMENT, user)
-            print(data)
+            if user is not self._author:
+                print(data)
             self._comments.append((user, data))
         else:
             raise Exception('Error: you must log in to comment')
@@ -111,13 +112,14 @@ class Post(ABC, Sender):
         elif category in (ActionCategory.LIKE, ActionCategory.COMMENT):
             if self._author.get_user_name() != user.get_user_name():
                 self._author.notify(category, user)
-            for u in set(self._likes + [t[0] for t in self._comments]):
-                if self._author.get_user_name() != u.get_user_name():
-                    u.notify_participant(category, user, self._author)
+            # for u in set(self._likes + [t[0] for t in self._comments]):
+            #     if self._author.get_user_name() != u.get_user_name():
+            #         u.notify_participant(category, user, self._author)
 
     @abstractmethod
     def __str__(self):
         pass
+
 
 
 class ImagePost(Post):
@@ -135,7 +137,7 @@ class ImagePost(Post):
         plt.show()
 
     def __str__(self):
-        return f'{self._author.get_user_name()} published an Image at {self._date}, to see the image, use the display function\n'
+        return f'{self._author.get_user_name()} posted a picture\n'
 
 
 class TextPost(Post):
@@ -145,7 +147,7 @@ class TextPost(Post):
         print(self)
 
     def __str__(self):
-        return f'{self._author.get_user_name()} published a post at {self._date}:\n"{self.__data}"\n'
+        return f'{self._author.get_user_name()} published a post:\n"{self.__data}"\n'
 
 
 class SalePost(Post):
@@ -191,7 +193,7 @@ class SalePost(Post):
         Returns:
         str: A string containing details of the SalePost.
         """
-        s = f'{self._author.get_user_name()} published a product for sale at {self._date}:\n'
+        s = f'{self._author.get_user_name()} posted a product for sale:\n'
         s += 'Sold! ' if not self.__available else 'For sale! '
         return s + f'{self.__description}, price: {self.__price}, pickup from: {self.__location}\n'
 

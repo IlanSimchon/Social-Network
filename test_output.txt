@@ -1,0 +1,82 @@
+The social network Twitter was created!
+
+Is network1 the same instance as network2? True
+
+User1 started following User2
+User1 started following User5
+User2 started following User5
+User2 started following User1
+User3 started following User1
+User3 started following User2
+User4 started following User3
+User4 started following User1
+User5 started following User2
+User5 started following User4
+
+User1 published a post:
+"Python is a versatile programming language."
+
+User2 published a post:
+"Data science is a fascinating field."
+
+User3 published a post:
+"Web development is in high demand."
+
+User4 posted a picture
+
+User5 posted a product for sale:
+For sale! Used laptop for sale, price: 500, pickup from: New York
+
+notification to User1: User4 liked your post
+notification to User2: User1 liked your post
+notification to User2: User1 commented on your post: I totally agree!
+notification to User3: User2 liked your post
+notification to User3: User2 commented on your post: I love building websites!
+notification to User4: User1 liked your post
+notification to User5: User3 commented on your post: Is the laptop still available?
+notification to User5: User4 commented on your post: What's the laptop's brand?
+
+Discount on User5 product! the new price is: 250.0
+
+notification to User1: User2 liked your post
+notification to User2: User3 liked your post
+notification to User4: User3 liked your post
+notification to User4: User3 commented on your post: Nice picture!
+notification to User4: User5 commented on your post: Where was this taken?
+
+User5's product is sold
+
+Shows picture
+notification to User4: User2 liked your post
+notification to User4: User2 commented on your post: Great photography!
+
+User2 unfollowed User1
+User3 unfollowed User2
+
+User3 disconnected
+User3 connected
+
+User name: User1, Number of posts: 1, Number of followers: 2
+
+User1 published a post:
+"Python is a versatile programming language."
+
+User5 posted a product for sale:
+Sold! Used laptop for sale, price: 250.0, pickup from: New York
+
+User4's notifications:
+User1 has a new post
+User3 has a new post
+User1 liked your post
+User3 liked your post
+User3 commented on your post
+User5 commented on your post
+User2 liked your post
+User2 commented on your post
+
+Twitter social network:
+User name: User1, Number of posts: 1, Number of followers: 2
+User name: User2, Number of posts: 1, Number of followers: 2
+User name: User3, Number of posts: 1, Number of followers: 1
+User name: User4, Number of posts: 1, Number of followers: 1
+User name: User5, Number of posts: 1, Number of followers: 2
