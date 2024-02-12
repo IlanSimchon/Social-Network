@@ -51,7 +51,7 @@ class PostFactory:
 
 class Sender:
     @abstractmethod
-    def update(self):
+    def notify(self):
         pass
 
 
@@ -67,7 +67,7 @@ class Post(ABC, Sender):
         self._date = datetime.now()
         self._likes = []
         self._comments = []
-        self.update(ActionCategory.POST, user)
+        self.notify(ActionCategory.POST, user)
 
     def like(self, user: User):
         """
@@ -77,7 +77,7 @@ class Post(ABC, Sender):
         - user (User): The user liking the post.
         """
         if user.is_connected():
-            self.update(ActionCategory.LIKE, user)
+            self.notify(ActionCategory.LIKE, user)
             self._likes.append(user)
         else:
             raise Exception('Error: you must log in to like')
@@ -91,14 +91,14 @@ class Post(ABC, Sender):
         - data (str): The comment text.
         """
         if user.is_connected():
-            self.update(ActionCategory.COMMENT, user)
+            self.notify(ActionCategory.COMMENT, user)
             if user is not self._author:
                 print(data)
             self._comments.append((user, data))
         else:
             raise Exception('Error: you must log in to comment')
 
-    def update(self, category: ActionCategory, user: User):
+    def notify(self, category: ActionCategory, user: User):
         """
         Notify users about post-related activities.
 
@@ -108,10 +108,10 @@ class Post(ABC, Sender):
         """
         if category == ActionCategory.POST:
             for user in self._author.get_followers():
-                user.notify(category, self._author)
+                user.update(category, self._author)
         elif category in (ActionCategory.LIKE, ActionCategory.COMMENT):
             if self._author.get_user_name() != user.get_user_name():
-                self._author.notify(category, user)
+                self._author.update(category, user)
             # for u in set(self._likes + [t[0] for t in self._comments]):
             #     if self._author.get_user_name() != u.get_user_name():
             #         u.notify_participant(category, user, self._author)
@@ -119,7 +119,6 @@ class Post(ABC, Sender):
     @abstractmethod
     def __str__(self):
         pass
-
 
 
 class ImagePost(Post):
@@ -196,4 +195,3 @@ class SalePost(Post):
         s = f'{self._author.get_user_name()} posted a product for sale:\n'
         s += 'Sold! ' if not self.__available else 'For sale! '
         return s + f'{self.__description}, price: {self.__price}, pickup from: {self.__location}\n'
-

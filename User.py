@@ -11,7 +11,7 @@ PostMap = {
 
 class Member(ABC):
     @abstractmethod
-    def notify(self):
+    def update(self):
         """
         Abstract method for notifications (Observer design pattern).
         This method should be implemented in subclasses.
@@ -110,7 +110,7 @@ class User(Member):
             return post
         raise Exception('Error: you must log in to post')
 
-    def notify(self, category: ActionCategory, user: 'User'):
+    def update(self, category: ActionCategory, user: 'User'):
         """
         Notify this user about different activities (e.g., posts, likes, comments) related to other users.
 
